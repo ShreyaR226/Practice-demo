@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Fake News Detector</title>
+	</head>
+	<body>
+		<h2>Fake News Detector</h2>
+		<input id="newsInput" type="text" placeholder="Enter a news headline" />
+		<button onclick="checkNews()">Check</button>
+		<p id="result"></p>
+		<script>
+			const fakeKeywords = ["shocking", "miracle", "scandal", "hoax"];
+			function checkNews() {
+				let news = document.getElementById("newsInput").value.toLowerCase();
+				let score = fakeKeywords.filter((word) => news.includes(word)).length;
+				let probability = Math.min(score * 20, 100);
+				let message =
+					probability > 50 ? "This might be FAKE news!" : "This looks real.";
+				document.getElementById("result").innerText = `Fake Probability:
+ ${probability}%\n${message}`;
+			}
+		</script>
+	</body>
+</html>
