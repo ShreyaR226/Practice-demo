@@ -10,6 +10,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Build and Run Docker Container
-        run: |
+        run: 
           docker build -t fake-news-detector .
           docker run -p 8080:80 fake-news-detector
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: .
