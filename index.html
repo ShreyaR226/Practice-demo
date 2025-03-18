@@ -1,24 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Fake News Detector</title>
-	</head>
-	<body>
-		<h2>Fake News Detector</h2>
-		<input id="newsInput" type="text" placeholder="Enter a news headline" />
-		<button onclick="checkNews()">Check</button>
-		<p id="result"></p>
-		<script>
-			const fakeKeywords = ["shocking", "miracle", "scandal", "hoax"];
-			function checkNews() {
-				let news = document.getElementById("newsInput").value.toLowerCase();
-				let score = fakeKeywords.filter((word) => news.includes(word)).length;
-				let probability = Math.min(score * 20, 100);
-				let message =
-					probability > 50 ? "This might be FAKE news!" : "This looks real.";
-				document.getElementById("result").innerText = `Fake Probability:
- ${probability}%\n${message}`;
-			}
-		</script>
-	</body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <style>
+        /* Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Glassmorphism Container */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            color: white;
+        }
+
+        /* Input Container */
+        .input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Input Field */
+        input {
+            width: 80%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 16px;
+            outline: none;
+        }
+
+        /* Microphone Button */
+        #micBtn {
+            background: #ff4b2b;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+
+        #micBtn:hover {
+            background: #ff3b1f;
+            transform: scale(1.1);
+        }
+
+        /* Button */
+        button {
+            background: #ff4b2b;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #ff3b1f;
+            transform: scale(1.05);
+        }
+
+        /* Loading Animation */
+        .hidden {
+            display: none;
+        }
+
+        #loading {
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ff4b2b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Result Box */
+        #result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Fake News Detected */
+        .fake {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+        }
+
+        /* Real News */
+        .real {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📰 Fake News Detector</h1>
+        <p>Enter or speak a news headline to check its authenticity.</p>
+
+        <div class="input-container">
+            <input id="newsInput" type="text" placeholder="Enter a news headline...">
+            <button id="micBtn">🎤</button>
+        </div>
+
+        <button onclick="checkNews()">🔍 Analyze</button>
+
+        <!-- Loading Animation -->
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="result-box">
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        // Fake news detection logic
+        const fakeKeywords = ["shocking", "miracle", "scandal", "hoax", "clickbait", "fake", "exposed", "unbelievable"];
+
+        function checkNews() {
+            let news = document.getElementById("newsInput").value.toLowerCase();
+
+            if (news.trim() === "") {
+                alert("Please enter a headline!");
+                return;
+            }
+
+            // Show loading animation
+            document.getElementById("loading").classList.remove("hidden");
+
+            // Simulate delay (fake AI processing effect)
+            setTimeout(() => {
+                // Hide loading animation
+                document.getElementById("loading").classList.add("hidden");
+
+                // Count how many fake keywords are in the input
+                let score = fakeKeywords.filter(word => news.includes(word)).length;
+
+                // Calculate probability
+                let probability = Math.min(score * 20, 100);
+
+                // Display message based on probability score
+                let resultBox = document.getElementById("result-box");
+                let resultText = document.getElementById("result");
+
+                if (probability > 50) {
+                    resultBox.className = "fake"; // Red background
+                    resultText.innerHTML = `🚨 Fake Probability: <strong>${probability}%</strong><br>⚠️ This might be FAKE news!`;
+                } else {
+                    resultBox.className = "real"; // Green background
+                    resultText.innerHTML = `✅ Fake Probability: <strong>${probability}%</strong><br>✔️ This looks real.`;
+                }
+
+                // Show result box
+                resultBox.style.display = "block";
+            }, 2000);
+        }
+
+        // 🎤 Speech Recognition (Voice Input)
+        document.getElementById("micBtn").addEventListener("click", () => {
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                let transcript = event.results[0][0].transcript;
+                document.getElementById("newsInput").value = transcript;
+            };
+
+            recognition.onerror = (event) => {
+                alert("Speech recognition error: " + event.error);
+            };
+        });
+
+    </script>
+</body>
+
 </html>
